@@ -1,9 +1,33 @@
 $(function () { // body of the function "block" between two curly braces. All jquery inside body of function so it runs when document is ready.
+
   $("button").on("click", function () {
     var theme = $(this).attr("theme");
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
       theme + "&api_key=dc6zaTOxFJmzC&limit=10";
+    var topics = ["corgis", "duck", "drums", "sean connery", "jack nicholson", "hank hill", "texas", "trailer park boys", "street fighter"];
 
+
+    // --------------------------
+    // MAIN PROCESS
+    // --------------------------
+    // DONE: Add search term to #buttons div--with guard statement
+    $("#form").click(function (event) {
+      event.preventDefault();
+      // stores the string value in a variable userSearch
+      var userSearch = $("#gif-search").val().trim();
+      var gifSearch = $("#gif-search").val();
+      if (gifSearch === "") {
+        return;
+      } else {
+        // pushes the string to the topics array
+        topics.push(userSearch);
+        // renders the new search button in the div
+        renderButtons();
+        console.log(userSearch);
+        console.log(topics);
+
+      }
+    });
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -20,9 +44,11 @@ $(function () { // body of the function "block" between two curly braces. All jq
                data-animate=${gif.images.fixed_height.url}
                data-state='still'
               >
-              <p>Rating: ${gif.rating}</p>
+              <p>Rating ${gif.rating}</p>
             </div>
           `
+
+
           $("#gifs-appear-here").prepend(gifDiv)
         }
       });
