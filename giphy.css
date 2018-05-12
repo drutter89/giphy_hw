@@ -1,0 +1,27 @@
+body {
+  background-color: beige;
+  box-align: auto;
+  text-align: center;
+  align-self: center;
+}
+
+#buttons {
+  background-color: rgba(11, 121, 102, 0.87);
+  font-size: 40px;
+  text-align: center;
+  width: 100%;
+  border: solid;
+}
+
+#gifs-appear-here {
+  background-color: rgba(106, 121, 129, 0.87);
+  font-size: 30px;
+  width: 100%;
+  text-align: center;
+  border: solid;
+}
+
+#p {
+  color: firebrick;
+  text-emphasis: bold;
+}
