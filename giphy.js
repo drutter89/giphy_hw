@@ -20,7 +20,7 @@ $(function () { // body of the function "block" between two curly braces. All jq
                data-animate=${gif.images.fixed_height.url}
                data-state='still'
               >
-              <p>Rating ${gif.rating}</p>
+              <p>Rating: ${gif.rating}</p>
             </div>
           `
           $("#gifs-appear-here").prepend(gifDiv)

@@ -18,10 +18,10 @@ body {
   font-size: 30px;
   width: 100%;
   text-align: center;
+  vertical-align: center;
   border: solid;
 }
 
-#p {
-  color: firebrick;
-  text-emphasis: bold;
+#theme {
+  border: solid;
 }
