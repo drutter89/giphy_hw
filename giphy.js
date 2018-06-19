@@ -1,61 +1,70 @@
-$(function () { // body of the function "block" between two curly braces. All jquery inside body of function so it runs when document is ready.
+$(document).ready(function () {
 
-  $("button").on("click", function () {
-    var theme = $(this).attr("theme");
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-      theme + "&api_key=dc6zaTOxFJmzC&limit=10";
-    var topics = ["corgis", "duck", "drums", "sean connery", "jack nicholson", "hank hill", "texas", "trailer park boys", "street fighter"];
+  var animals = [
+    "dog", "cat", "rabbit", "hamster", "skunk", "goldfish",
+    "bird", "ferret", "turtle", "sugar glider", "chinchilla",
+    "hedgehog", "hermit crab", "gerbil", "pygmy goat", "chicken",
+    "capybara", "teacup pig", "serval", "salamander", "frog"
+  ];
 
+  // function to make buttons and add to page
+  function populateButtons(arrayToUse, classToAdd, areaToAddTo) {
+    $(areaToAddTo).empty();
 
-    // --------------------------
-    // MAIN PROCESS
-    // --------------------------
-    // DONE: Add search term to #buttons div--with guard statement
-    $("#form").click(function (event) {
-      event.preventDefault();
-      // stores the string value in a variable userSearch
-      var userSearch = $("#gif-search").val().trim();
-      var gifSearch = $("#gif-search").val();
-      if (gifSearch === "") {
-        return;
-      } else {
-        // pushes the string to the topics array
-        topics.push(userSearch);
-        // renders the new search button in the div
-        renderButtons();
-        console.log(userSearch);
-        console.log(topics);
+    for (var i = 0; i < arrayToUse.length; i++) {
+      var a = $("<button>");
+      a.addClass(classToAdd);
+      a.attr("data-type", arrayToUse[i]);
+      a.text(arrayToUse[i]);
+      $(areaToAddTo).append(a);
+    }
 
-      }
-    });
+  }
+
+  $(document).on("click", ".animal-button", function () {
+    $("#animals").empty();
+    $(".animal-button").removeClass("active");
+    $(this).addClass("active");
+
+    var type = $(this).attr("data-type");
+    var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + type + "&api_key=dc6zaTOxFJmzC&limit=10";
+
     $.ajax({
         url: queryURL,
         method: "GET"
       })
       .then(function (response) {
         var results = response.data;
-        console.log(results)
-        for (let gif of results) {
-          let gifDiv = `
-            <div class='item'>
-              <img 
-                src=${gif.images.fixed_height_still.url}
-                data-still=${gif.images.fixed_height_still.url}
-               data-animate=${gif.images.fixed_height.url}
-               data-state='still'
-              >
-              <p>Rating ${gif.rating}</p>
-            </div>
-          `
 
+        for (var i = 0; i < results.length; i++) {
+          var animalDiv = $("<div class=\"animal-item\">");
 
-          $("#gifs-appear-here").prepend(gifDiv)
+          var rating = results[i].rating;
+
+          var p = $("<p>").text("Rating: " + rating);
+
+          var animated = results[i].images.fixed_height.url;
+          var still = results[i].images.fixed_height_still.url;
+
+          var animalImage = $("<img>");
+          animalImage.attr("src", still);
+          animalImage.attr("data-still", still);
+          animalImage.attr("data-animate", animated);
+          animalImage.attr("data-state", "still");
+          animalImage.addClass("animal-image");
+
+          animalDiv.append(p);
+          animalDiv.append(animalImage);
+
+          $("#animals").append(animalDiv);
         }
       });
   });
 
-  $("#gifs-appear-here").on("click", "img", function (event) {
-    var state = $(this).attr('data-state');
+  $(document).on("click", ".animal-image", function () {
+
+    var state = $(this).attr("data-state");
+
     if (state === "still") {
       $(this).attr("src", $(this).attr("data-animate"));
       $(this).attr("data-state", "animate");
@@ -63,32 +72,19 @@ $(function () { // body of the function "block" between two curly braces. All jq
       $(this).attr("src", $(this).attr("data-still"));
       $(this).attr("data-state", "still");
     }
-  })
+  });
 
-})
-// if you try to dynamically create an element on the page through j query you wont be able to tie an event handler to that element you have to use event delegation/event bubbling/event propegation
-/*
+  $("#add-animal").on("click", function (event) {
+    event.preventDefault();
+    var newAnimal = $("input").eq(0).val();
 
+    if (newAnimal.length > 2) {
+      animals.push(newAnimal);
+    }
 
-     for (var i = 0; i < results.length; i++) {
-          var gifDiv = $("<div class='item'>");
+    populateButtons(animals, "animal-button", "#animal-buttons");
 
-          var rating = results[i].rating;
+  });
 
-          var p = $("<p>").text("Rating: " + rating);
-
-          var themeImage = $("<img>");
-          themeImage.attr("src", results[i].images.fixed_height.url);
-
-          gifDiv.prepend(p);
-          gifDiv.prepend(themeImage);
-
-          $("#gifs-appear-here").prepend(gifDiv);
-
-
-          var state = $(this).attr("data-state");
-          // If the clicked image's state is still, update its src attribute to what its data-animate value is.
-          // Then, set the image's data-state to animate
-          // Else set src to the data-still value
-     }     
-*/
+  populateButtons(animals, "animal-button", "#animal-buttons");
+});
